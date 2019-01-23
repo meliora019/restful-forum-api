@@ -1,10 +1,10 @@
-**Remove like**
+**Delete topic**
 ----
-Removes like from the message.
+Deletes user's forum topic.
 
 * **URL**
 
-    /messages/:message_id/like
+    /users/:user_id/topics/:topic_id
 
 * **Method:**
 
@@ -14,7 +14,8 @@ Removes like from the message.
 
    **Required:**
 
-   `message_id=[string]`
+   `user_id=[string]`
+   `topic_id=[string]`
 
 * **Data Params**
 
@@ -23,20 +24,22 @@ Removes like from the message.
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `{"success": 1, "message": "Like removed"}`
+    **Content:** `{"success": 1, "message": "Topic deleted"}`
 
 * **Error Response:**
 
   * **Code:** 400 BAD REQUEST <br />
-    **Content:** `{ "success": 0, "message" : "Message does not exist" }`
+    **Content:** `{ "success": 0, "message" : "Topic does not exist" }`
+
   OR
+  
   * **Code:** 403 FORBIDDEN <br />
 
 
 * **Sample Call:**
 
   ```javascript
-    let response = await fetch('/messages/:message_id/like', {
+    let response = await fetch('/users/:user_id/topics/:topic_id', {
         credentials: 'same-origin',
         method: 'DELETE',
         headers: {

@@ -1,6 +1,6 @@
-**Change message**
+**Delete message**
 ----
-Changes forum topic's message.
+Deletes forum topic's message.
 
 * **URL**
 
@@ -8,7 +8,7 @@ Changes forum topic's message.
 
 * **Method:**
 
-    `PUT`
+    `DELETE`
 
 *  **URL Params**
 
@@ -20,14 +20,12 @@ Changes forum topic's message.
 
 * **Data Params**
 
-    **Required:**
-
-   `message=[string]`
+    none
 
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `{"success": 1, "message": "Message changed"}`
+    **Content:** `{"success": 1, "message": "Message deleted"}`
 
 * **Error Response:**
 
@@ -35,7 +33,7 @@ Changes forum topic's message.
     **Content:** `{ "success": 0, "message" : "Message does not exist" }`
 
   OR
-
+  
   * **Code:** 403 FORBIDDEN <br />
 
 
@@ -44,11 +42,9 @@ Changes forum topic's message.
   ```javascript
     let response = await fetch('/users/:user_id/topics/:topic_id/messages/:message_id', {
         credentials: 'same-origin',
-        method: 'PUT',
+        method: 'DELETE',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
             'auth-token': <token>
-        },
-        body: new FormData(postData)
+        }
     });
   ```

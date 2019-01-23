@@ -29,10 +29,14 @@ Sets like to the message.
 
   * **Code:** 400 BAD REQUEST <br />
     **Content:** `{ "success": 0, "message" : "Message does not exist" }`
+
   OR
+
   * **Code:** 409 CONFLICT <br />
     **Content:** `{ "success": 0, "message" : "You have already liked this message" }`
+
   OR
+  
   * **Code:** 403 FORBIDDEN <br />
 
 
