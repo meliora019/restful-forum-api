@@ -19,7 +19,9 @@ Registers the user to the system and returns the execution status in json.
     **Required:**
 
    `email=[string]`
+   
    `username=[string]`
+
    `password=[string]`
 
 * **Success Response:**

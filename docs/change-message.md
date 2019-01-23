@@ -15,7 +15,9 @@ Changes forum topic's message.
    **Required:**
 
    `user_id=[string]`
+
    `topic_id=[string]`
+   
    `message_id=[string]`
 
 * **Data Params**

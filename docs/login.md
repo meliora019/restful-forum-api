@@ -19,7 +19,9 @@ Checks for correct email, password and client_id and if parameters are correct r
     **Required:**
 
    `email=[string]`
+   
    `password=[string]`
+
    `client_id=[string]`
 
 * **Success Response:**

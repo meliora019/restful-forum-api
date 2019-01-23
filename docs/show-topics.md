@@ -19,6 +19,7 @@ Show forum topics with pagination.
     **Optional:**
 
    `offset=[integer] (default value = 0)`
+   
    `limit=[integer] (default value = 10)`
 
 * **Success Response:**

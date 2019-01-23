@@ -15,6 +15,7 @@ Deletes user's forum topic.
    **Required:**
 
    `user_id=[string]`
+   
    `topic_id=[string]`
 
 * **Data Params**
@@ -32,7 +33,7 @@ Deletes user's forum topic.
     **Content:** `{ "success": 0, "message" : "Topic does not exist" }`
 
   OR
-  
+
   * **Code:** 403 FORBIDDEN <br />
 
 

@@ -15,6 +15,7 @@ Creates messages for forum topic.
    **Required:**
 
    `user_id=[string]`
+   
    `topic_id=[string]`
 
 * **Data Params**
@@ -33,7 +34,7 @@ Creates messages for forum topic.
     **Content:** `{"success": 0, "message": "Topic does not exist"}`
 
   OR
-  
+
   * **Code:** 403 FORBIDDEN <br />
 
 

@@ -15,7 +15,9 @@ Deletes forum topic's message.
    **Required:**
 
    `user_id=[string]`
+   
    `topic_id=[string]`
+   
    `message_id=[string]`
 
 * **Data Params**
@@ -33,7 +35,7 @@ Deletes forum topic's message.
     **Content:** `{ "success": 0, "message" : "Message does not exist" }`
 
   OR
-  
+
   * **Code:** 403 FORBIDDEN <br />
 
 

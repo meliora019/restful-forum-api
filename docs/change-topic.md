@@ -15,6 +15,7 @@ Changes forum topic's title.
    **Required:**
 
    `user_id=[string]`
+   
    `topic_id=[string]`
 
 * **Data Params**
@@ -34,7 +35,7 @@ Changes forum topic's title.
     **Content:** `{ "success": 0, "message" : "Topic does not exist" }`
 
   OR
-  
+
   * **Code:** 403 FORBIDDEN <br />
 
 
