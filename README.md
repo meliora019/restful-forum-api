@@ -18,5 +18,5 @@
 3. `npm install`
 4. `sails lift`
 
-####To run tests:
+To run tests:  
 `npm test`
