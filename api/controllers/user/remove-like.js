@@ -26,12 +26,12 @@ module.exports = {
 
       messageExists = await Message.doesExist(messageId);
       if (!messageExists) {
-        return exits.notFound({success: 0, message: "Message does not exist"});
+        return exits.notFound({success: 0, message: 'Message does not exist'});
       }
 
       await Like.destroy({user_id: this.req.options.userId, message_id: messageId});
 
-      return exits.success({"success": 1, "message": "Like removed"});
+      return exits.success({'success': 1, 'message': 'Like removed'});
     } catch (err) {
       console.log(err);
       return exits.serverError();

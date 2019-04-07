@@ -48,19 +48,19 @@ module.exports = {
       let newPasswordConfirmation = _.escape(inputs.new_password_confirmation);
       let userId = _.escape(inputs.user_id);
 
-      if (userId != this.req.options.userId) {
+      if (userId !== this.req.options.userId) {
         return exits.forbidden();
       }
 
       let user = await User.findOne({id: userId}).select(['password']);
 
-      if (user.password != currentPassword || newPassword != newPasswordConfirmation) {
-        return exits.badRequest({"success": 0, "message": "Wrong current password or password and its confirmation don't match"});
+      if (user.password !== currentPassword || newPassword !== newPasswordConfirmation) {
+        return exits.badRequest({'success': 0, 'message': 'Wrong current password or password and its confirmation don\'t match'});
       }
 
       await User.update({id: userId}).set({password: newPassword});
 
-      return exits.success({"success": 1, "message": "Password changed"});
+      return exits.success({'success': 1, 'message': 'Password changed'});
     } catch (err) {
       console.log(err);
       return exits.serverError();

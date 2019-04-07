@@ -1,15 +1,15 @@
 module.exports = {
 
-  friendlyName: 'Create topic',
+  friendlyName: 'Delete topic',
 
-  description: 'Create topic.',
+  description: 'Delete topic.',
 
   inputs: {
-    title: {
+    user_id: {
       type: 'string',
       required: true,
     },
-    user_id: {
+    topic_id: {
       type: 'string',
       required: true,
     },
@@ -19,6 +19,9 @@ module.exports = {
     serverError: {
       responseType: 'serverError'
     },
+    badRequest: {
+      responseType: 'badRequest'
+    },
     forbidden: {
       responseType: 'forbidden'
     }
@@ -26,16 +29,19 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      let title = _.escape(inputs.title);
       let userId = _.escape(inputs.user_id);
+      let topicId = _.escape(inputs.topic_id);
 
-      if (userId != this.req.options.userId) {
+      if (userId !== this.req.options.userId) {
         return exits.forbidden();
       }
 
-      let topic = await Topic.create({user_id: userId, title: title}).fetch();
+      let topics = await Topic.destroy({id: topicId}).fetch();
+      if (topics.length === 0) {
+        return exits.badRequest({success: 0, message: 'Topic does not exist'});
+      }
 
-      return exits.success({"success": 1, "message": "Topic created", /*"title": topic.title,*/ "topic_id": topic.id});
+      return exits.success({'success': 1, 'message': 'Topic deleted'});
     } catch (err) {
       console.log(err);
       return exits.serverError();

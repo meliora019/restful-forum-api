@@ -17,7 +17,7 @@ module.exports = {
     try {
       await Token.destroy({token: this.req.options.accessToken});
 
-      return exits.success({"success": 1, "message": "Logged out"});
+      return exits.success({'success': 1, 'message': 'Logged out'});
     } catch (err) {
       console.log(err);
       return exits.serverError();

@@ -13,7 +13,6 @@ module.exports = async function (req, res, proceed) {
   }
 
   req.options.userId = token.user_id;
-  req.options.assessToken = token.token;
 
   return proceed();
 

@@ -11,14 +11,17 @@ const path = require('path');
 
 describe('UserController', () => {
 
-  let accessToken, userId, topicId, messageId;
+  let accessToken;
+  let userId;
+  let topicId;
+  let messageId;
 
   before(async () => {
-    const dir = `${sails.config.appPath}/avatars`
+    const dir = `${sails.config.appPath}/avatars`;
 
     let files = fs.readdirSync(dir);
     for (let file of files) {
-      if (file != '.gitkeep') {
+      if (file !== '.gitkeep') {
         fs.unlinkSync(path.join(dir, file));
       }
     }
@@ -33,34 +36,34 @@ describe('UserController', () => {
 
   describe('#signup', () => {
 
-  	it('method not allowed', (done) => {
+    it('method not allowed', (done) => {
       request.get(`${host}/users`, (err, httpResponse, body) => {
         if (err) console.log(err);
-				assert.equal(httpResponse.statusCode, 404);
+        assert.equal(httpResponse.statusCode, 404);
         done();
-			});
-		});
+      });
+    });
 
     it('invalid param "email"', (done) => {
       request.post(`${host}/users`, {form: {
-  			email: 'ivanmail.ru', username: 'Ivan', password: '123456789'
-  		}}, (err, httpResponse, body) => {
+        email: 'ivanmail.ru', username: 'Ivan', password: '123456789'
+      }}, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 400);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 400);
+        done();
+      });
+    });
 
     it('should register user', (done) => {
       request.post(`${host}/users`, {form: {
-  			email: 'ivan@mail.ru', username: 'Ivan', password: '123456789'
-  		}}, async (err, httpResponse, body) => {
+        email: 'ivan@mail.ru', username: 'Ivan', password: '123456789'
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
           let users = await User.find();
 
-  				assert.equal(httpResponse.statusCode, 200);
+          assert.equal(httpResponse.statusCode, 200);
           assert.equal(body.success, 1);
           assert.equal(users.length, 1);
           assert.equal(users[0].email, "ivan@mail.ru");
@@ -71,13 +74,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should not register user (user exists)', (done) => {
       request.post(`${host}/users`, {form: {
-  			email: 'ivan@mail.ru', username: 'Ivan', password: '123123456789'
-  		}}, async (err, httpResponse, body) => {
+        email: 'ivan@mail.ru', username: 'Ivan', password: '123123456789'
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -92,8 +95,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -101,67 +104,67 @@ describe('UserController', () => {
 
     it('not correct user password', (done) => {
       request.post(`${host}/login`, {form: {
-  			email: 'ivan@mail.ru', password: '1234567890', client_id: "2bfe9d72a4aae8f0"
-  		}}, async (err, httpResponse, body) => {
+        email: 'ivan@mail.ru', password: '1234567890', client_id: "2bfe9d72a4aae8f0"
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
           let tokens = await Token.find();
 
-  				assert.equal(httpResponse.statusCode, 400);
-  				assert.equal(body.success, 0);
-  				assert.equal(body.message, "Either wrong client_id or wrong email and/or password");
-  				assert.equal(tokens.length, 0);
+          assert.equal(httpResponse.statusCode, 400);
+          assert.equal(body.success, 0);
+          assert.equal(body.message, "Either wrong client_id or wrong email and/or password");
+          assert.equal(tokens.length, 0);
 
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('not correct client_id', (done) => {
       request.post(`${host}/login`, {form: {
-  			email: 'ivan@mail.ru', password: '123456789', client_id: "2bfe9d72a4aae8f0q"
-  		}}, async (err, httpResponse, body) => {
+        email: 'ivan@mail.ru', password: '123456789', client_id: "2bfe9d72a4aae8f0q"
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
           let tokens = await Token.find();
 
-  				assert.equal(httpResponse.statusCode, 400);
-  				assert.equal(body.success, 0);
-  				assert.equal(body.message, "Either wrong client_id or wrong email and/or password");
-  				assert.equal(tokens.length, 0);
+          assert.equal(httpResponse.statusCode, 400);
+          assert.equal(body.success, 0);
+          assert.equal(body.message, "Either wrong client_id or wrong email and/or password");
+          assert.equal(tokens.length, 0);
 
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should log in and get token', (done) => {
       request.post(`${host}/login`, {form: {
-  			email: 'ivan@mail.ru', password: '123456789', client_id: "2bfe9d72a4aae8f0"
-  		}, headers: {"auth-token": "tokkken"}}, async (err, httpResponse, body) => {
+        email: 'ivan@mail.ru', password: '123456789', client_id: "2bfe9d72a4aae8f0"
+      }, headers: {"auth-token": "tokkken"}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
           let tokens = await Token.find();
 
-  				assert.equal(httpResponse.statusCode, 200);
-  				assert.equal(body.success, 1);
-  				assert.equal(body.token_type, "bearer");
-  				assert.equal(body.username, "Ivan");
-  				assert.equal(typeof body.token, "string");
-  				assert.equal(typeof body.user_id, "string");
-  				assert.equal(body.token.length, 32);
-  				assert.equal(tokens.length, 1);
+          assert.equal(httpResponse.statusCode, 200);
+          assert.equal(body.success, 1);
+          assert.equal(body.token_type, "bearer");
+          assert.equal(body.username, "Ivan");
+          assert.equal(typeof body.token, "string");
+          assert.equal(typeof body.user_id, "string");
+          assert.equal(body.token.length, 32);
+          assert.equal(tokens.length, 1);
           assert.equal(typeof tokens[0].token, "string");
-  				assert.equal(tokens[0].token.length, 32);
-  				assert.equal(tokens[0].client_id, "2bfe9d72a4aae8f0");
-  				assert.equal(tokens[0].expiration_time, 3600);
+          assert.equal(tokens[0].token.length, 32);
+          assert.equal(tokens[0].client_id, "2bfe9d72a4aae8f0");
+          assert.equal(tokens[0].expiration_time, 3600);
 
           accessToken = body.token;
           userId = body.user_id;
@@ -170,8 +173,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -183,13 +186,13 @@ describe('UserController', () => {
       }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
-  				assert.equal(httpResponse.statusCode, 404);
+          assert.equal(httpResponse.statusCode, 404);
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('wrong token', (done) => {
       request.put(`${host}/users/${userId}/password`, {headers: {
@@ -197,18 +200,18 @@ describe('UserController', () => {
       }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
-  				assert.equal(httpResponse.statusCode, 403);
+          assert.equal(httpResponse.statusCode, 403);
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('wrong current password', (done) => {
       request.put(`${host}/users/${userId}/password`, {form: {
-  			current_password: '1234567899', new_password: '1234567890', new_password_confirmation: '1234567890'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        current_password: '1234567899', new_password: '1234567890', new_password_confirmation: '1234567890'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           assert.equal(httpResponse.statusCode, 400);
@@ -216,13 +219,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('new password and password confirmation does not match', (done) => {
       request.put(`${host}/users/${userId}/password`, {form: {
-  			current_password: '123456789', new_password: '1234567890', new_password_confirmation: '1234567891'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        current_password: '123456789', new_password: '1234567890', new_password_confirmation: '1234567891'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           assert.equal(httpResponse.statusCode, 400);
@@ -230,13 +233,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('password should change', (done) => {
       request.put(`${host}/users/${userId}/password`, {form: {
-  			current_password: '123456789', new_password: '1234567890', new_password_confirmation: '1234567890'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        current_password: '123456789', new_password: '1234567890', new_password_confirmation: '1234567890'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -250,8 +253,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -263,13 +266,13 @@ describe('UserController', () => {
       }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
-  				assert.equal(httpResponse.statusCode, 404);
+          assert.equal(httpResponse.statusCode, 404);
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('wrong token', (done) => {
       request.put(`${host}/users/${userId}`, {headers: {
@@ -277,18 +280,18 @@ describe('UserController', () => {
       }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
-  				assert.equal(httpResponse.statusCode, 403);
+          assert.equal(httpResponse.statusCode, 403);
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('username should be changed', (done) => {
       request.put(`${host}/users/${userId}`, {form: {
-  			new_username: 'John'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        new_username: 'John'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -302,8 +305,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -315,13 +318,13 @@ describe('UserController', () => {
       }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
-  				assert.equal(httpResponse.statusCode, 404);
+          assert.equal(httpResponse.statusCode, 404);
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('wrong token', (done) => {
       request.put(`${host}/users/${userId}/avatar`, {headers: {
@@ -329,13 +332,13 @@ describe('UserController', () => {
       }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
-  				assert.equal(httpResponse.statusCode, 403);
+          assert.equal(httpResponse.statusCode, 403);
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('no avatar was uploaded', (done) => {
       request.put(`${host}/users/${userId}/avatar`, {headers: {
@@ -344,25 +347,25 @@ describe('UserController', () => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
-  				assert.equal(httpResponse.statusCode, 400);
-  				assert.equal(body.success, 0);
-  				assert.equal(body.message, "No avatar was uploaded");
+          assert.equal(httpResponse.statusCode, 400);
+          assert.equal(body.success, 0);
+          assert.equal(body.message, "No avatar was uploaded");
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should upload avatar', (done) => {
       request.put(`${host}/users/${userId}/avatar`, {formData: {
         avatar: [require('fs').createReadStream(sails.config.appPath + '/test_files/cat.jpeg')]
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
 
-          const file = `${sails.config.appPath}/avatars/ivan@mail.ru.jpg`
+          const file = `${sails.config.appPath}/avatars/ivan@mail.ru.jpg`;
           let fileExists;
 
           fileExists = fs.existsSync(file);
@@ -375,8 +378,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -386,13 +389,13 @@ describe('UserController', () => {
       request.get(`${host}/topics?limit=wrong`, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
-  				assert.equal(httpResponse.statusCode, 400);
+          assert.equal(httpResponse.statusCode, 400);
           done();
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('limit 5, 5 desc', (done) => {
       request.get(`${host}/topics?offset=5&limit=5`, async (err, httpResponse, body) => {
@@ -409,8 +412,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -419,15 +422,15 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.post(`${host}/users/${userId}/topics`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('without params', (done) => {
       request.post(`${host}/users/${userId}/topics`, {headers: {
-  			"auth-token": accessToken
-  		}}, async (err, httpResponse, body) => {
+        "auth-token": accessToken
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           assert.equal(httpResponse.statusCode, 400);
@@ -435,13 +438,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should not create topic', (done) => {
       request.post(`${host}/users/sdfsf7887sdfsdf/topics`, {form: {
-  			title: 'title 21'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        title: 'title 21'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           let topics = await Topic.find();
@@ -451,13 +454,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should create topic', (done) => {
       request.post(`${host}/users/${userId}/topics`, {form: {
-  			title: 'title 21'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        title: 'title 21'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -477,8 +480,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -487,15 +490,15 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.put(`${host}/users/${userId}/topics/${topicId}`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('without params', (done) => {
       request.put(`${host}/users/${userId}/topics/${topicId}`, {headers: {
-  			"auth-token": accessToken
-  		}}, async (err, httpResponse, body) => {
+        "auth-token": accessToken
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           assert.equal(httpResponse.statusCode, 400);
@@ -503,13 +506,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should change title of the topic', (done) => {
       request.put(`${host}/users/${userId}/topics/${topicId}`, {form: {
-  			title: 'title 22'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        title: 'title 22'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -526,8 +529,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -536,15 +539,15 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.delete(`${host}/users/${userId}/topics/${topicId}`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('not correct param topic_id', (done) => {
       request.delete(`${host}/users/${userId}/topics/sdfsdf5343kkj`, {headers: {
-  			"auth-token": accessToken
-  		}}, async (err, httpResponse, body) => {
+        "auth-token": accessToken
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           assert.equal(httpResponse.statusCode, 400);
@@ -552,13 +555,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('create and delete topic', (done) => {
       request.post(`${host}/users/${userId}/topics`, {form: {
-  			title: 'title 21'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        title: 'title 21'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -583,12 +586,12 @@ describe('UserController', () => {
             } catch (err) {
               done(err);
             }
-    			});
+          });
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -609,8 +612,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -619,15 +622,15 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.post(`${host}/users/${userId}/topics/${topicId}/messages`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('without params', (done) => {
       request.post(`${host}/users/${userId}/topics/${topicId}/messages`, {headers: {
-  			"auth-token": accessToken
-  		}}, async (err, httpResponse, body) => {
+        "auth-token": accessToken
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           assert.equal(httpResponse.statusCode, 400);
@@ -635,13 +638,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should not create message (topic does not exist)', (done) => {
       request.post(`${host}/users/${userId}/topics/sdfsdf88sdf/messages`, {form: {
-  			message: 'message 21'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        message: 'message 21'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           let messages = await Message.find();
@@ -651,13 +654,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should create message', (done) => {
       request.post(`${host}/users/${userId}/topics/${topicId}/messages`, {form: {
-  			message: 'message 21'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        message: 'message 21'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -677,8 +680,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -687,15 +690,15 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.put(`${host}/users/${userId}/topics/${topicId}/messages/${messageId}`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('without params', (done) => {
       request.put(`${host}/users/${userId}/topics/${topicId}/messages/${messageId}`, {headers: {
-  			"auth-token": accessToken
-  		}}, async (err, httpResponse, body) => {
+        "auth-token": accessToken
+      }}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           assert.equal(httpResponse.statusCode, 400);
@@ -703,13 +706,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should not change message (topic does not exist)', (done) => {
       request.put(`${host}/users/${userId}/topics/sdfsdf88sdf/messages/${messageId}`, {form: {
-  			message: 'message 22'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        message: 'message 22'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           let messages = await Message.find();
@@ -720,13 +723,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should change message', (done) => {
       request.put(`${host}/users/${userId}/topics/${topicId}/messages/${messageId}`, {form: {
-  			message: 'message 22'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        message: 'message 22'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -744,8 +747,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -754,10 +757,10 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.delete(`${host}/users/${userId}/topics/${topicId}/messages/${messageId}`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('should not delete message (topic does not exist)', (done) => {
       request.delete(`${host}/users/${userId}/topics/sdfsdf88sdf/messages/${messageId}`, { headers: {
@@ -773,13 +776,13 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('create and delete message', (done) => {
       request.post(`${host}/users/${userId}/topics/${topicId}/messages`, {form: {
-  			message: 'message 99'
-  		}, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
+        message: 'message 99'
+      }, headers: {"auth-token": accessToken}}, async (err, httpResponse, body) => {
         if (err) done(err);
         try {
           body = JSON.parse(body);
@@ -804,12 +807,12 @@ describe('UserController', () => {
             } catch (err) {
               done(err);
             }
-    			});
+          });
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -818,10 +821,10 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.put(`${host}/messages/${messageId}/like`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('should not set like (message does not exist)', (done) => {
       request.put(`${host}/messages/sfsd778sdfsdf/like`, {headers: {
@@ -836,8 +839,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should set like', (done) => {
       request.put(`${host}/messages/${messageId}/like`, {headers: {
@@ -858,8 +861,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should set like on the same message again', (done) => {
       request.put(`${host}/messages/${messageId}/like`, {headers: {
@@ -878,8 +881,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -888,10 +891,10 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.delete(`${host}/messages/${messageId}/like`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('should not remove like (message does not exist)', (done) => {
       request.delete(`${host}/messages/sfsd778sdfsdf/like`, {headers: {
@@ -906,8 +909,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('should remove like', (done) => {
       request.delete(`${host}/messages/${messageId}/like`, {headers: {
@@ -926,8 +929,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
     it('trying remove the same like again', (done) => {
       request.delete(`${host}/messages/${messageId}/like`, {headers: {
@@ -946,8 +949,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 
@@ -956,10 +959,10 @@ describe('UserController', () => {
     it('without token', (done) => {
       request.get(`${host}/logout`, (err, httpResponse, body) => {
         if (err) done(err);
-				assert.equal(httpResponse.statusCode, 403);
-        done()
-			});
-		});
+        assert.equal(httpResponse.statusCode, 403);
+        done();
+      });
+    });
 
     it('should logout', (done) => {
       request.get(`${host}/logout`, {headers: {
@@ -978,8 +981,8 @@ describe('UserController', () => {
         } catch (err) {
           done(err);
         }
-			});
-		});
+      });
+    });
 
   });
 

@@ -26,8 +26,8 @@ module.exports = {
 
     for (let i = 1; i <= 20; i++) {
       messages.push({
-        user_id: "5c4216daf3b091745f6d5fbf",
-        topic_id: "5c445a1da2a54313da01770b",
+        user_id: '5c4216daf3b091745f6d5fbf',
+        topic_id: '5c445a1da2a54313da01770b',
         message: `message ${i}`
       });
     }
@@ -37,7 +37,9 @@ module.exports = {
 
   doesExist: async function(id) {
     let message = await Message.findOne({id: id});
-    if (message) return true;
+    if (message){
+      return true;
+    }
     return false;
   },
 

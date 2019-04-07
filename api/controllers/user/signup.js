@@ -40,12 +40,12 @@ module.exports = {
 
       let user = await User.findOne({email: email});
       if (user) {
-        return exits.conflict({"success": 0, "message": "User exists"});
+        return exits.conflict({'success': 0, 'message': 'User exists'});
       }
 
       await User.create({email: email, username: username, password: password});
 
-      return exits.success({"success": 1, "message": "Registration successful"});
+      return exits.success({'success': 1, 'message': 'Registration successful'});
     } catch (err) {
       console.log(err);
       return exits.serverError();

@@ -39,7 +39,7 @@ module.exports = {
       let userIsLoggedIn = await User.isLoggedIn(email, password);
 
       if (!clientExists || !userIsLoggedIn) {
-        return exits.badRequest({success: 0, message: "Either wrong client_id or wrong email and/or password"});
+        return exits.badRequest({success: 0, message: 'Either wrong client_id or wrong email and/or password'});
       }
 
       let token = await Token.generate();
@@ -49,8 +49,8 @@ module.exports = {
       let expiresIn = createdToken.expiration_time;
 
       return exits.success({
-        "success": 1, "token_type": "bearer", "token": token, "expires_in": expiresIn,
-        "user_id": user.id, username: user.username
+        'success': 1, 'token_type': 'bearer', 'token': token, 'expires_in': expiresIn,
+        'user_id': user.id, username: user.username
       });
     } catch (err) {
       console.log(err);

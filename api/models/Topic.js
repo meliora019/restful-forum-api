@@ -21,7 +21,7 @@ module.exports = {
     let topics = [];
 
     for (let i = 1; i <= 20; i++) {
-      topics.push({user_id: "5c4216daf3b091745f6d5fbf", title: `title ${i}`});
+      topics.push({user_id: '5c4216daf3b091745f6d5fbf', title: `title ${i}`});
     }
 
     await Topic.createEach(topics);
@@ -29,7 +29,9 @@ module.exports = {
 
   doesExist: async function(id) {
     let topic = await Topic.findOne({id: id});
-    if (topic) return true;
+    if (topic){
+      return true;
+    }
     return false;
   },
 

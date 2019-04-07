@@ -1,7 +1,22 @@
-Database: MongoDB
+**Recommended software versions:**
+----
 
-Node.js framework: Sails
+* MongoDB >= 4.0.5
 
-1. npm install
-2. mongod --dbpath "your/path/to/db"
-3. npm run-script test.user-controller
+* node.js >= 10.11.0
+
+* sails.js >= 1.1.0
+
+* mocha >= 6.0.2 (for running tests)
+
+
+**Usage**
+----
+
+1. git clone
+2. Create file "local.js" in folder "config" and fill it in by example "stuff/local_example.js"
+3. `npm install`
+4. `sails lift`
+
+####To run tests:
+`npm test`

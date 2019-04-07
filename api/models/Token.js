@@ -39,13 +39,15 @@ module.exports = {
 
   generate: async function() {
     const crypto = require('crypto');
-    let str = Math.random() + "go" + Math.random();
-    return crypto.createHash('md5').update(str).digest("hex");
+    let str = Math.random() + 'go' + Math.random();
+    return crypto.createHash('md5').update(str).digest('hex');
   },
 
   doesExist: async function(token) {
     let item = await Token.findOne({token: token});
-    if (item) return true;
+    if (item){
+      return true;
+    }
     return false;
   },
 

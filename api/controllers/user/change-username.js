@@ -30,16 +30,16 @@ module.exports = {
       let newUsername = _.escape(inputs.new_username);
       let userId = _.escape(inputs.user_id);
 
-      if (userId != this.req.options.userId) {
+      if (userId !== this.req.options.userId) {
         return exits.forbidden();
       }
 
       let user = await User.update({id: userId}).set({username: newUsername}).fetch();
-      if (user.length == 0) {
+      if (user.length === 0) {
         return exits.badRequest();
       }
 
-      return exits.success({"success": 1, "message": "Username changed"/*, "new_username": user[0].username*/});
+      return exits.success({'success': 1, 'message': 'Username changed'/*, "new_username": user[0].username*/});
     } catch (err) {
       console.log(err);
       return exits.serverError();

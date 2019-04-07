@@ -25,7 +25,7 @@ module.exports.policies = {
     'signup': true,
     'login': true,
     'show-topics': true,
-    'show-messages': true, 
+    'show-messages': true,
   }
 
 };

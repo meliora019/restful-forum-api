@@ -30,17 +30,17 @@ module.exports = {
 
       messageExists = await Message.doesExist(messageId);
       if (!messageExists) {
-        return exits.badRequest({success:0, message: "Message does not exist"});
+        return exits.badRequest({success:0, message: 'Message does not exist'});
       }
 
       let like = await Like.findOne({user_id: this.req.options.userId, message_id: messageId});
       if (like) {
-        return exits.conflict({success: 0, message: "You have alreadey liked this message"});
+        return exits.conflict({success: 0, message: 'You have alreadey liked this message'});
       }
 
       await Like.create({user_id: this.req.options.userId, message_id: messageId});
 
-      return exits.success({"success": 1, "message": "Like set"});
+      return exits.success({'success': 1, 'message': 'Like set'});
     } catch (err) {
       console.log(err);
       return exits.serverError();

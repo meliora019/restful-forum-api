@@ -1,19 +1,19 @@
 module.exports = {
 
-  friendlyName: 'Delete message',
+  friendlyName: 'Create message',
 
-  description: 'Delete own message of a topic.',
+  description: 'Create message for a topic.',
 
   inputs: {
+    message: {
+      type: 'string',
+      required: true,
+    },
     user_id: {
       type: 'string',
       required: true,
     },
     topic_id: {
-      type: 'string',
-      required: true,
-    },
-    message_id: {
       type: 'string',
       required: true,
     },
@@ -33,20 +33,22 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      let message = _.escape(inputs.message);
       let userId = _.escape(inputs.user_id);
       let topicId = _.escape(inputs.topic_id);
-      let messageId = _.escape(inputs.message_id);
 
-      if (userId != this.req.options.userId) {
+      if (userId !== this.req.options.userId) {
         return exits.forbidden();
       }
 
-      let deletedMessages = await Message.destroy({id: messageId, topic_id: topicId, user_id: userId}).fetch();
-      if (deletedMessages.length == 0) {
-        return exits.badRequest({success: 0, message: "Message does not exist"});
+      topicExists = await Topic.doesExist(topicId);
+      if (!topicExists) {
+        return exits.badRequest({success: 0, message: 'Topic does not exist'});
       }
 
-      return exits.success({"success": 1, "message": "Message deleted"});
+      let item = await Message.create({user_id: userId, topic_id: topicId, message: message}).fetch();
+
+      return exits.success({'success': 1, 'message': 'Message created', 'message_id': item.id});
     } catch (err) {
       console.log(err);
       return exits.serverError();

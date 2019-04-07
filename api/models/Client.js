@@ -18,14 +18,16 @@ module.exports = {
   compose: async function() {
     await Client.destroy({});
     await Client.create({
-      client_id: "2bfe9d72a4aae8f0",
-      secret: "5ebe2294ecd0e0f08eab7690d2a6ee69"
+      client_id: '2bfe9d72a4aae8f0',
+      secret: '5ebe2294ecd0e0f08eab7690d2a6ee69'
     });
   },
 
-  doesExist: async function(client_id) {
-    let client = await Client.findOne({client_id: client_id});
-    if (client === undefined) return false;
+  doesExist: async function(clientId) {
+    let client = await Client.findOne({client_id: clientId});
+    if (client === undefined){
+      return false;
+    }
     return true;
   }
 

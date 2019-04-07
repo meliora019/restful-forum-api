@@ -31,7 +31,9 @@ module.exports = {
 
   isLoggedIn: async function(email, password) {
     let user = await User.findOne({email: email, password: password});
-    if (user === undefined) return false;
+    if (user === undefined){
+      return false;
+    }
     return true;
   },
 
